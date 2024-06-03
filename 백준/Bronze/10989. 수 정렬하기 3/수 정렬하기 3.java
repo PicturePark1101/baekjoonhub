@@ -1,30 +1,24 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-
+    
     public static void main(String[] args) throws Exception {
-
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-      int n = Integer.parseInt(br.readLine());
-      int[] list = new int[n];
-
-      for (int i = 0; i < n; i++) {
-        list[i] = Integer.parseInt(br.readLine());
-      }
-
-      Arrays.sort(list);
-
-      for (int i : list) {
-        bw.write(String.valueOf(i)+"\n");
-      }
-
-      bw.flush();
-      bw.close();
-      br.close();
+        
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        int N = Integer.parseInt(br.readLine());
+        int[] nums = new int[N];
+    
+        for (int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(br.readLine());
+        }
+        Arrays.sort(nums);
+        
+        for (int i = 0; i < N; i++) {
+            sb.append(nums[i]).append("\n");
+        }
+        System.out.println(sb);
+        br.close();
     }
-
 }
-  
