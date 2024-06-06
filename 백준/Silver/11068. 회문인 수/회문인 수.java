@@ -1,57 +1,51 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-
-  // 진수변환
-  private static boolean radixConvert(int n , int r) {
-    ArrayList<Integer> convertWord = new ArrayList<>();
-
-    while (n > 0) {
-      convertWord.add(n % r);
-      n /= r;
-    }
-
-    return isPaldm(convertWord);
-  }
-
-  private static boolean isPaldm(ArrayList<Integer> word){
-    for (int i = 0; i < word.size() / 2; i++) {
-      if (word.get(i) != word.get(word.size() - i - 1)){
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public static void main(String args[]) throws Exception{
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-    int N = Integer.parseInt(br.readLine());
-
-    for (int i = 0; i < N; i++) {
-      int number = Integer.parseInt(br.readLine());
-      boolean isFound = false;
-
-        for (int j = 2; j <= 64; j++) {
-          if (radixConvert(number, j)){
-            isFound = true;
-            break;
-          }
+            
+    public static ArrayList<Integer> makeBaseArr(int num, int B) {
+        ArrayList<Integer> baseList = new ArrayList<>();
+        
+        while (num > 0) {
+            baseList.add(num % B);
+            num /= B;
         }
-
-      bw.write(isFound ? "1\n" : "0\n");
+       return baseList;
     }
-
-    bw.flush();
-    bw.close();
-    br.close();
-  }
-
+    
+    public static boolean isPalin(ArrayList<Integer> baseList) {
+        for (int i = 0; i < baseList.size() / 2; i++) {
+            if (baseList.get(i) != baseList.get(baseList.size() - i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static void main(String[] args) throws Exception {
+        
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        
+        int N = Integer.parseInt(br.readLine());
+        
+        
+        for (int i = 0; i < N; i++) {
+            boolean flag = false;
+            int input = Integer.parseInt(br.readLine());
+            for (int j = 2; j <= 64; j++) {
+                if (isPalin(makeBaseArr(input, j))) {
+                    flag = true;
+                    break;    
+                }
+            }
+            if (flag) {
+               sb.append("1");
+            } else {
+                sb.append("0");
+            }              
+            sb.append("\n");
+        }
+        System.out.println(sb);      
+    }
 }
