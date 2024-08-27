@@ -5,9 +5,7 @@ import java.util.StringTokenizer;
 public class Main {
 
   private static int[] nums;
-  private static String[] op;
-  private static String[] bucket;
-  private static boolean[] visited;
+  private static int[] opNum;
   private static int max;
   private static int min;
 
@@ -20,9 +18,7 @@ public class Main {
     int N = Integer.parseInt(br.readLine());
 
     nums = new int[N];
-    op = new String[N - 1];
-    bucket = new String[N - 1];
-    visited = new boolean[N - 1];
+    opNum = new int[4];
     max = Integer.MIN_VALUE;
     min = Integer.MAX_VALUE;
 
@@ -32,15 +28,11 @@ public class Main {
     }
 
     st = new StringTokenizer(br.readLine());
-    int idx = 0;
     for (int i = 0; i < 4; i++) {
-      int operationNums = Integer.parseInt(st.nextToken());
-      for (int j = 0; j < operationNums; j++) {
-        op[idx++] = chooseOperator(i);
-      }
+      opNum[i] = Integer.parseInt(st.nextToken());
     }
 
-    dfs( 0);
+    dfs(1, nums[0]);
 
     System.out.println(max);
     System.out.println(min);
@@ -48,51 +40,25 @@ public class Main {
     br.close();
   }
 
-  private static void dfs(int depth) {
+  private static void dfs(int depth, int result) {
 
-    if (depth == op.length) {
-      int result = calc();
+    if (depth == nums.length) {
       max = Math.max(max, result);
       min = Math.min(min, result);
       return;
     }
 
-    for (int i = 0; i < op.length; i++) {
-      if (!visited[i]) {
-        visited[i] = true;
-        bucket[depth] = op[i];
-        dfs(depth + 1);
-        visited[i] = false;
-      }
-    }
-  }
-
-  private static String chooseOperator(int i){
-    switch (i) {
-      case 0 -> { return "+"; }
-      case 1 -> { return "-"; }
-      case 2 -> { return "*"; }
-      case 3 -> { return "/"; }
-    }
-    return null;
-  }
-
-  private static int calc () {
-    int result = nums[0];
-    for (int i = 1; i < nums.length; i++) {
-      switch (bucket[i - 1]) {
-        case "+" -> result += nums[i];
-        case "-" -> result -= nums[i];
-        case "*" -> result *= nums[i];
-        case "/" -> {
-          if (result < 0) {
-            result = - (Math.abs(result) / nums[i]);
-          } else {
-            result /= nums[i];
-          }
+    for (int i = 0; i < 4; i++) {
+      if (opNum[i] > 0) {
+        opNum[i]--;
+        switch (i) {
+          case 0 -> dfs(depth + 1, result + nums[depth]);
+          case 1 -> dfs(depth + 1, result - nums[depth]);
+          case 2 -> dfs(depth + 1, result * nums[depth]);
+          case 3 -> dfs(depth + 1, result / nums[depth]);
         }
+        opNum[i]++;
       }
     }
-    return result;
   }
 }
