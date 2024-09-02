@@ -1,45 +1,50 @@
 import java.util.*;
 import java.io.*;
 
+// 순서 있고 중복 있음 
 public class Main {
-	
-	static int N, M;
-	static int[] arr, printArr;
-	static StringBuilder sb = new StringBuilder(); // 시간초과 해결용
-	
-	public static void main(String[] args) throws IOException{
-			Scanner sc = new Scanner(System.in);
-			
-			N = sc.nextInt();
-			M = sc.nextInt();
-			
-			arr = new int[N];
-			printArr = new int[M];
-			
-			for(int i=0; i<N; i++) {
-				arr[i] = sc.nextInt();
-			}
-			sc.close();
-			
-			Arrays.sort(arr); // 입력받은 배열을 오름차순으로 정렬한다.
-			
-			dfs(0, 0);
-			
-			System.out.println(sb);
-	}
-	
-	static void dfs(int start, int depth) {
-		if(depth == M) {
-			for(int i=0; i<M; i++) {
-				sb.append(printArr[i] + " ");
-			}
-			sb.append("\n");
-			return;
-		}
-		
-		for(int i=0; i<N; i++) {
-			printArr[depth] = arr[i];
-			dfs(i + 1, depth + 1); 
-		}
-	}
+    
+    private static int N;
+    private static int M;
+    private static int[] nums;
+    private static int[] bucket;
+    private static StringBuilder sb;
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        sb = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+ 
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        
+        nums = new int[N];
+        bucket = new int[M];
+        
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
+        }
+        Arrays.sort(nums);
+        
+        dfs(0);
+        System.out.println(sb.toString());
+
+        br.close();
+    }
+    
+    private static void dfs(int depth) {
+        if (M == depth) {
+            for (int i = 0; i < M; i++) {
+                sb.append(bucket[i]+" ");
+            }
+            sb.append("\n");
+            return;
+        }
+        
+        for (int i = 0; i < N; i++) {
+            bucket[depth] = nums[i];
+            dfs(depth + 1);
+        }
+    }
 }
