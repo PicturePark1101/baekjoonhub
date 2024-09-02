@@ -1,53 +1,46 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    static StringBuilder sb = new StringBuilder();
-    static int n, m;
-    static boolean[] visit;
-    static int[] arr;
-    static int[] input;
-
-
-    public static void main(String[] args) throws IOException {
+    
+    private static int N;
+    private static int M;
+    private static int[] nums;
+    private static int[] bucket;
+    
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        
+        nums = new int[N];
+        bucket = new int[M];
+        
         st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-
-        st = new StringTokenizer(br.readLine());
-        input = new int[n];
-        for(int i=0;i<n;i++){
-            input[i] = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
         }
-        Arrays.sort(input);
-
-        visit = new boolean[n];
-        arr = new int[m];
-        dfs(0,0);
-        System.out.println(sb);
+        
+        Arrays.sort(nums);
+        dfs(0, 0);
+        br.close();
     }
-
-    private static void dfs(int depth, int start) {
-        if (depth == m) {
-            for (int val : arr) {
-                sb.append(val).append(" ");
+    
+    private static void dfs(int start, int depth) {
+        if (depth == M) {
+            for (int i = 0; i < M; i++) {
+                System.out.print(bucket[i]+ " ");
             }
-            sb.append("\n");
+            System.out.println();
             return;
         }
-
-        for (int i = start; i < n; i++) {
-            if (!visit[i]) {
-                visit[i] = true;
-                arr[depth] = input[i];
-                dfs(depth + 1,i);
-                visit[i] = false;
-            }
+        
+        for (int i = start; i < N; i++) {
+            bucket[depth] = nums[i];
+            dfs(i + 1, depth + 1);
         }
     }
+    
 }
