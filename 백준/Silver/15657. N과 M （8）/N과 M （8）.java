@@ -27,7 +27,9 @@ public class Main {
             nums[i] = Integer.parseInt(st.nextToken());
         }
         Arrays.sort(nums);
+        
         dfs(0, 0);
+        
         System.out.println(sb.toString());
         br.close();
     }
@@ -46,6 +48,4 @@ public class Main {
            dfs(i, depth + 1);
         }
     }
-    
-    
 }
