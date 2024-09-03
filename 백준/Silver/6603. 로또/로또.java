@@ -1,43 +1,47 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    
+    private static int k;
+    private static int[] nums;
+    private static int[] bucket;
+    private static StringBuilder sb;
 
-  static int[] nums;
-  static int[] bucket;
-
-  public static void main(String[] args) throws Exception {
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer st = new StringTokenizer(br.readLine());
-
-    int K = Integer.parseInt(st.nextToken());
-    while (K != 0) {
-      nums = new int[K];
-      bucket = new int[K];
-      for (int i = 0; i < K; i++) {
-        nums[i] = Integer.parseInt(st.nextToken());
-      }
-      dfs(0, 0, 6);
-      st = new StringTokenizer(br.readLine());
-      K = Integer.parseInt(st.nextToken());
-      System.out.println();
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        sb = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        bucket = new int[6];
+        k = Integer.parseInt(st.nextToken());
+        while(k != 0) {
+            nums = new int[k];
+            for (int i = 0; i < k; i++) {
+                nums[i] = Integer.parseInt(st.nextToken());
+            } 
+            makeLotto(0, 0, k);
+            sb.append("\n");
+            st = new StringTokenizer(br.readLine());
+            k = Integer.parseInt(st.nextToken()); 
+        }
+        
+        System.out.println(sb.toString());
+        br.close();
     }
-  }
-
-  private static void dfs(int start, int pick, int N) {
-    if (N == pick) {
-      for (int i = 0; i < N; i++) {
-        System.out.print(bucket[i]+ " ");
-      }
-      System.out.println();
-      return;
+    
+    private static void makeLotto(int start, int depth, int k) {
+        if(depth == 6) {
+            for (int i = 0; i < 6; i++) {
+                sb.append(bucket[i]+ " ");
+            }
+            sb.append("\n");
+            return;
+        }
+        
+        for (int i = start; i < k; i ++) {
+            bucket[depth] = nums[i];
+            makeLotto(i + 1, depth + 1, k);
+        }
     }
-
-    for (int i = start; i < nums.length; i++) {
-      bucket[pick] = nums[i];
-      dfs(i + 1, pick + 1, N) ;
-    }
-  }
 }
