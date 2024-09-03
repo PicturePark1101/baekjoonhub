@@ -1,41 +1,39 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-
-  private static int[] nums;
-  private static int count;
-  private static int S;
-
-  public static void main(String[] args) throws Exception {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer st = new StringTokenizer(br.readLine());
-
-    int N = Integer.parseInt(st.nextToken());
-    S = Integer.parseInt(st.nextToken());
-    nums = new int[N];
-
-    st = new StringTokenizer(br.readLine());
-    for (int i = 0; i < N; i++) {
-      nums[i] = Integer.parseInt(st.nextToken());
+    
+    private static int N;
+    private static int S;
+    private static int[] nums;
+    private static int ans = 0;
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        N = Integer.parseInt(st.nextToken());
+        S = Integer.parseInt(st.nextToken());
+        nums = new int[N];
+      
+        st = new StringTokenizer(br.readLine());        
+        for (int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
+        }
+        
+        makeAns(0, 0);
+        if (S == 0) ans--;
+        System.out.println(ans);
+        br.close();
     }
-
-    dfs(0, 0);
-
-    if (S == 0) count--;
-    System.out.println(count);
-
-    br.close();
-  }
-
-  private static void dfs(int idx, int cntSum) {
-    if (nums.length == idx) {
-      if (cntSum == S) count++;
-      return;
+    
+    private static void makeAns(int depth, int sum) {
+        if (depth == N) {
+            if (sum == S) { ans++; }
+            return;
+        }
+        
+        makeAns(depth + 1, sum + nums[depth]);
+        makeAns(depth + 1, sum);
     }
-
-    dfs(idx + 1, cntSum + nums[idx]);
-    dfs(idx + 1, cntSum);
-  }
 }
