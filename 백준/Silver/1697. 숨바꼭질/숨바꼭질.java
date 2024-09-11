@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 public class Main {
   private static int N;
   private static int K;
-  private static boolean[] visited = new boolean[100001];
+  private static int[] ansArr = new int[100001];
 
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,25 +21,38 @@ public class Main {
 
   private static int bfs() {
     Queue<Integer> queue = new LinkedList<>();
-    int length = 0;
+    queue.add(N);
 
-    queue.offer(N);
+    ansArr[N] = 0;
     while (!queue.isEmpty()) {
-      int size = queue.size();
-      for (int i = 0; i < size; i++) {
-        int n = queue.poll();
-        // if (n < 0) continue;
-        if (n == K) return length;
+      int n = queue.poll();
+      int index = 0;
+      if (n == K) {
+        return ansArr[n];
+      }
+      for (int i = 0; i < 3; i++) {
+        switch (i) {
+          case 0 :
+            index = n - 1;
+            break;
+          case 1:
+            index = n + 1;
+            break;
+          case 2:
+            index = n * 2;
+            break;
+        }
 
-        if (!visited[n]) {
-          visited[n] = true;
-          if (n - 1 >= 0) queue.offer(n - 1);
-          if (n + 1 <= 100000) queue.offer(n + 1);
-          if (n * 2 <= 100000) queue.offer(n * 2);
+        if (isValid(index)) {
+          ansArr[index] = ansArr[n] + 1;
+          queue.offer(index);
         }
       }
-      length++;
     }
     return -1;
+  }
+
+  private static boolean isValid(int index) {
+    return index >= 0 && index <= 100000 && ansArr[index] == 0;
   }
 }
