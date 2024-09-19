@@ -14,8 +14,7 @@ public class Main {
             nums[i] = Double.valueOf(st.nextToken());
         }
         
-        fixArr(nums, max(nums));
-        System.out.println(calcAvg(nums));
+        System.out.println(calcAvg(nums, max(nums)));
         
         br.close();
     }
@@ -30,17 +29,11 @@ public class Main {
         return max;
     }
     
-    private static void fixArr(double[] nums, double max) {
-        for (int i = 0; i < nums.length; i++) {
-             nums[i] = nums[i] / max * 100;
-        }
-    }
-    
-    private static double calcAvg(double[] nums) {
+    private static double calcAvg(double[] nums, double max) {
         double sum = 0;
         for (int i = 0; i < nums.length; i++) {
              sum += nums[i];
         }
-        return sum / nums.length;
+        return sum / max * 100 / nums.length;
     }
 }
