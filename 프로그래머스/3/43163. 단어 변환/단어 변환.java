@@ -27,13 +27,12 @@ class Solution {
     private void dfs(String[] words, int depth, String target, String current)  {
         if (target.equals(current)) {
             answer = Math.min(answer, depth);
-            // System.out.println("answer : " +answer);
             return;
         }
         
-        if (depth == words.length) {
-            return;
-        }
+        // if (depth == words.length) {
+        //     return;
+        // }
                 
         for (int i = 0; i < words.length; i++) {
             //방문하는 조건은 한글자만 다르고, 방문하지 않은 경우임
