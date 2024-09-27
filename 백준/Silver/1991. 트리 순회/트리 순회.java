@@ -38,9 +38,6 @@ public class Main {
             return node;
         }
         
-        findNode(node.getLeftNode(), alphabet);
-        findNode(node.getRightNode(), alphabet);
-           
         TreeNode leftResult = findNode(node.getLeftNode(), alphabet);
         if (leftResult != null) {
            return leftResult; // 왼쪽에서 찾으면 반환
