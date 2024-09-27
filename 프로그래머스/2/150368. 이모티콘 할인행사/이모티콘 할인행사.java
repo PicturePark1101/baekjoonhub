@@ -11,11 +11,6 @@ class Solution {
             this.price = price;
         }
     }
-    // 할인율은 10, 20, 30, 40 중 하나임 
-    // 이모지들이 선택할 수 있는 할인율은 저 4개 중 한개..
-    // 이모지의 최대 길이는 7임. 
-    // 서비스 가입자가 가장 우선시 되는 목표임.
-    // 가입자가 같다면 이모티콘 판매액이 그 다음 모교
     
     private int[] fixedDiscount = {10, 20, 30, 40};
     private int[] answer = new int[2];
@@ -52,15 +47,11 @@ class Solution {
         for (int i = 0; i < userInfo.length; i++) {
             int userDiscount = userInfo[i].discount;
             int userPrice = userInfo[i].price;
-            // 이모지 순회
             int total = 0;
             for (int j = 0; j < emoticons.length; j++) {
-                // 할인률 안맞으면 아예 안삼
                 if (bucket[j] < userDiscount) continue;
-                
-                // 산다. 기존가격과 할인률로
                 total += calcDiscountPrice(emoticons[j], bucket[j]);
-                if (total >=  userPrice) { // 만약 가격이 유저의 가격보다 높다면 가입함.
+                if (total >=  userPrice) {
                     total = 0;
                     joinCount++;
                     break;
@@ -74,7 +65,6 @@ class Solution {
             answer[0] = joinCount;
             answer[1] = priceCount;
         } else if (answer[0] == joinCount && answer[1] < priceCount) {
-            answer[0] = joinCount;
             answer[1] = priceCount;
         }
     }
