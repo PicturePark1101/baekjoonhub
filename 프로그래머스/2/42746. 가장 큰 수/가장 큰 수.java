@@ -3,14 +3,10 @@ import java.util.*;
 class Solution {
     
     private int N;
-    private boolean[] visited;
     private String answer;
     
     public String solution(int[] numbers) {
-        N = numbers.length;
-        answer = "-1";
-        visited = new boolean[N];
-        
+        N = numbers.length;        
         String[] numberToStr = new String[N];
         
         int index = 0;
