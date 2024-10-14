@@ -1,52 +1,59 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-
-  public static String cursor(String pwd) {
-
-    Stack<Character> pre = new Stack<>();
-    Stack<Character> post = new Stack<>();
-    StringBuilder sb = new StringBuilder();
-
-    for (int i = 0 ; i < pwd.length(); i++) {
-      char ch = pwd.charAt(i);
-      if (ch == '>') {
-        if (!post.empty()) {
-          pre.push(post.pop());
-        }
-      } else if (ch =='<'){
-        if (!pre.empty()) {
-          post.push(pre.pop());
-        }
-      } else if (ch == '-') {
-        if (!pre.empty()) {
-          pre.pop();
-        }
-      } else {
-        pre.push(ch);
-      }
-    }
-
-    while (!post.empty()) {
-      pre.push(post.pop());
-    }
-
-    for (int i = 0; i < pre.size(); i++) {
-      sb.append(pre.elementAt(i));
-    }
-    
-    return sb.toString();
-  }
   public static void main(String[] args) throws Exception {
-
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
     int N = Integer.parseInt(br.readLine());
     for (int i = 0; i < N; i++) {
-      System.out.println(cursor(br.readLine()));
+      System.out.println(getString(br.readLine().toCharArray()));
     }
+    br.close();
   }
 
+  private static String getString(char[] commands) {
+    Stack<Character> stack1 = new Stack<>();
+    Stack<Character> stack2 = new Stack<>();
+
+    for (int j = 0; j < commands.length; j++) {
+      executeCommand(stack1, stack2, commands[j]);
+    }
+
+    while(!stack2.isEmpty()) {
+      stack1.push(stack2.pop());
+    }
+
+    StringBuilder sb = new StringBuilder();
+    while(!stack1.isEmpty()) {
+      sb.append(stack1.pop());
+    }
+    
+     return sb.reverse().toString();
+  }
+
+  private static void executeCommand(Stack<Character> stack1, Stack<Character> stack2, char command) {
+    switch(command) {
+      case '<' : {
+        if (!stack1.isEmpty()) {
+          stack2.push(stack1.pop());
+        }
+        break;
+      }
+      case '>' : {
+        if (!stack2.isEmpty()) {
+          stack1.push(stack2.pop());
+        }
+        break;
+      }
+      case '-' : {
+        if (!stack1.isEmpty()) {
+          stack1.pop();
+        }
+        break;
+      }
+      default : {
+        stack1.push(command);
+      }
+    }
+  }
 }
