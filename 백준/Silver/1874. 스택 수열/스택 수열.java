@@ -21,23 +21,22 @@ public class Main {
   }
 
   private static int executeCommand(Stack<Integer> stack, int pointer, StringBuilder sb, int inputN) {
+
     if (stack.isEmpty() || stack.peek() < inputN) {
       while (inputN >= pointer) {
         stack.push(pointer++);
         sb.append("+").append("\n");
       }
-      sb.append("-").append("\n");
-      stack.pop();
-    } else {
-      if (stack.peek() == inputN) {
-        stack.pop();
-        sb.append("-").append("\n");
-      } else {
-        sb.setLength(0);
-        sb.append("NO");
-        return -1;
-      }
     }
+
+    if (stack.peek() != inputN) {
+      sb.setLength(0);
+      sb.append("NO");
+      return -1;
+    }
+    
+    stack.pop();
+    sb.append("-").append("\n");
     return pointer;
   }
 }
