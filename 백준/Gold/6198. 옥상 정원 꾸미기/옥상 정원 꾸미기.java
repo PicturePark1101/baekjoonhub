@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.io.*;
 
@@ -7,8 +6,8 @@ public class Main {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     Stack<Integer> stack = new Stack<>();
     int N = Integer.parseInt(br.readLine());
-    long[] arr = new long[N];
-    long[] count = new long[N];
+    int[] arr = new int[N];
+    int[] count = new int[N];
 
     for (int i = 0; i < N; i++) {
       arr[i] = Integer.parseInt(br.readLine());
@@ -29,7 +28,7 @@ public class Main {
     }
 
     long answer = 0L;
-    for (long n : count) {
+    for (int n : count) {
       answer += n;
     }
     System.out.println(answer);
