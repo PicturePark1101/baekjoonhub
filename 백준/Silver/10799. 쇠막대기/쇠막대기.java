@@ -1,30 +1,28 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-
-  public static void main(String[] args) throws Exception {
-
+  public static void main (String[] args) throws Exception {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-    String input = br.readLine();
+    System.out.println(executeCommand(br.readLine()));
+    br.close();
+  }
+  private static int executeCommand(String str) {
     Stack<Character> stack = new Stack<>();
-    int ans = 0;
-
-    for (int i = 0; i < input.length(); i++) {
-      char ch = input.charAt(i);
-      if (ch == '(') {
-        stack.push(ch);
-      }else if (ch == ')') {
-        stack.pop();
-        if (input.charAt(i - 1) == ')') { // 레이저아님
-          ans++;
-        } else { // 레이저임
-          ans += stack.size();
+    int count = 0;
+    for (int i = 0; i < str.length(); i++) {
+      char currentChar = str.charAt(i);
+      if (currentChar == '(') {
+        stack.push(currentChar);
+      } else {
+        if (str.charAt(i - 1) == '(') {
+          count += stack.size() - 1;
+        } else if (!stack.isEmpty()){
+          count++;
         }
+        stack.pop();
       }
     }
-    System.out.println(ans);
+    return count;
   }
 }
