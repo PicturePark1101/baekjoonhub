@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 
 public class Main {
   private static boolean[][] visited;
+  private static int[][] level;
   private static int[][] miro;
   private static int N;
   private static int M;
@@ -29,6 +30,7 @@ public class Main {
     M = Integer.parseInt(st.nextToken());
 
     miro = new int[N][M];
+    level = new int[N][M];
     visited = new boolean[N][M];
 
     for (int i = 0; i < N; i++) {
@@ -38,41 +40,33 @@ public class Main {
       }
     }
 
-    System.out.println(bfs(0, 0));
+    bfs(0, 0);
+    System.out.println(miro[N - 1][M - 1]);
     br.close();
   }
 
-  private static int bfs(int r, int c) {
+  private static void bfs(int r, int c) {
     Queue<Point> queue = new ArrayDeque<>();
-    int width = 0;
 
     queue.offer(new Point(r, c));
     visited[r][c] = true;
 
     while (!queue.isEmpty()) {
-      int size = queue.size();
-      width++;
-      for (int i = 0; i < size; i++) {
-        Point currentPoint = queue.poll();
-        int x = currentPoint.r;
-        int y = currentPoint.c;
+      Point currentPoint = queue.poll();
+      int x = currentPoint.r;
+      int y = currentPoint.c;
 
-        if (x == N - 1 && y == M - 1) {
-          return width;
-        }
+      for (int j = 0; j < 4; j++) {
+        int newR = x + dx[j];
+        int newC = y + dy[j];
 
-        for (int j = 0; j < 4; j++) {
-          int newR = x + dx[j];
-          int newC = y + dy[j];
-
-          if (isValidPath(newR, newC) && !visited[newR][newC]) {
-            visited[newR][newC] = true;
-            queue.offer(new Point(newR, newC));
-          }
+        if (isValidPath(newR, newC) && !visited[newR][newC]) {
+          visited[newR][newC] = true;
+          queue.offer(new Point(newR, newC));
+          miro[newR][newC] = miro[x][y] + 1;
         }
       }
     }
-    return 0;
   }
 
   private static boolean isValidPath(int r, int c) {
