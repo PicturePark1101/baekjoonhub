@@ -1,54 +1,41 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.io.*;
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-class Node {
-
-  private int r;
-  private int c;
-
-  public Node(int r, int c) {
-    this.r = r;
-    this.c = c;
-  }
-
-  public Node() {
-  }
-
-  public int getR() {
-    return r;
-  }
-
-  public int getC() {
-    return c;
-  }
-}
-
 public class Main {
-
+  private static boolean[][] visited;
+  private static int[][] miro;
   private static int N;
   private static int M;
-  private static String[][] miro;
-  private static boolean[][] visited;
-  private static int[] dx = {-1, 0, 0, 1};
-  private static int[] dy = {0, 1, -1, 0};;
-  private static int minLength = Integer.MAX_VALUE;
+  private static final int[] dx = {-1, 0, 0, 1};
+  private static final int[] dy = {0, -1, 1, 0};
 
-  public static void main(String[] args) throws IOException {
+  static class Point {
+    private int r;
+    private int c;
+
+    public Point(int r, int c) {
+      this.r = r;
+      this.c = c;
+    }
+  }
+
+  public static void main (String[] args) throws Exception {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     StringTokenizer st = new StringTokenizer(br.readLine());
 
     N = Integer.parseInt(st.nextToken());
     M = Integer.parseInt(st.nextToken());
 
-    miro = new String[N][M];
+    miro = new int[N][M];
     visited = new boolean[N][M];
 
     for (int i = 0; i < N; i++) {
-      miro[i] = br.readLine().split("");
+      String[] input = br.readLine().split("");
+      for (int j = 0; j < M; j++) {
+        miro[i][j] = Integer.parseInt(input[j]);
+      }
     }
 
     System.out.println(bfs(0, 0));
@@ -56,35 +43,39 @@ public class Main {
   }
 
   private static int bfs(int r, int c) {
-    Queue<Node> queue = new LinkedList<>();
-    int length = 0;
+    Queue<Point> queue = new ArrayDeque<>();
+    int width = 0;
 
-    queue.offer(new Node(r, c));
+    queue.offer(new Point(r, c));
     visited[r][c] = true;
+
     while (!queue.isEmpty()) {
       int size = queue.size();
-      length++;
-
+      width++;
       for (int i = 0; i < size; i++) {
-        Node node = queue.poll();
-        if (node.getR() == N - 1 && node.getC() == M - 1) {
-          return length;
+        Point currentPoint = queue.poll();
+        int x = currentPoint.r;
+        int y = currentPoint.c;
+
+        if (x == N - 1 && y == M - 1) {
+          return width;
         }
 
         for (int j = 0; j < 4; j++) {
-          int newR = dx[j] + node.getR();
-          int newC = dy[j] + node.getC();
-          if (isValid(newR, newC) && miro[newR][newC].equals("1") && !visited[newR][newC]) {
+          int newR = x + dx[j];
+          int newC = y + dy[j];
+
+          if (isValidPath(newR, newC) && !visited[newR][newC]) {
             visited[newR][newC] = true;
-            queue.offer(new Node(newR, newC));
+            queue.offer(new Point(newR, newC));
           }
         }
       }
     }
-    return -1;
+    return 0;
   }
 
-  private static boolean isValid(int r, int c) {
-    return r >= 0 && r < N && c >= 0 && c < M ;
+  private static boolean isValidPath(int r, int c) {
+    return r >= 0 && r < N && c >= 0 && c < M && miro[r][c] == 1;
   }
 }
