@@ -1,10 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -29,7 +30,7 @@ public class Main {
   }
 
   private static void bfs(int start, int dest) {
-    PriorityQueue<Integer> queue = new PriorityQueue<>();
+    Queue<Integer> queue = new ArrayDeque<>();
     queue.offer(start);
     road[start] = 0;
     visited[start] = true;
