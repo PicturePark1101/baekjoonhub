@@ -5,46 +5,46 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-  private static int[][] board;
-  private static int[] ansList = {0, 0, 0};
-
+  private static int[] answer = { 0, 0, 0 };
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     StringTokenizer st;
-    int N = Integer.parseInt(br.readLine());
+    int n = Integer.parseInt(br.readLine());
+    int[][] paper = new int[n][n];
 
-    board = new int[N][N];
-
-    for (int i = 0 ; i < N; i++) {
+    for (int i = 0; i < n; i++) {
       st = new StringTokenizer(br.readLine());
-      for (int j = 0 ; j < N; j++) {
-        board[i][j] = Integer.parseInt(st.nextToken());
+      for (int j = 0; j < n; j++) {
+        paper[i][j] = Integer.parseInt(st.nextToken());
       }
     }
 
-    find(0, 0, N);
+    func(paper, n, 0, 0);
     for (int i = 0; i < 3; i++) {
-      System.out.println(ansList[i]);
+      System.out.println(answer[i]);
     }
+    br.close();
   }
 
-
-  private static void find(int r, int c, int n) {
-    if (!isValid(r, c, n)) {
+  private static void func(int[][] paper, int n, int startR, int startC) {
+    if (!isFullSameNumber(paper, n, startR, startC)) {
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-          find(r + (n / 3 * i), c + (n / 3 * j), n / 3);
+          func(paper, n / 3, startR + (n / 3 * i), startC + (n / 3 * j));
         }
       }
-    } else {
-      ansList[board[r][c] + 1]++;
+    }else {
+        answer[paper[startR][startC] + 1]++;
     }
   }
-  private static boolean isValid(int r, int c, int n) {
-    int start = board[r][c];
-    for (int i = r; i < r + n; i++) {
-      for (int j = c; j < c + n; j++) {
-        if (start != board[i][j]) return false;
+
+  private static boolean isFullSameNumber(int[][] paper, int n, int startR, int startC) {
+    int start = paper[startR][startC];
+    for (int i = startR; i < startR + n; i++) {
+      for (int j = startC; j < startC + n; j++) {
+        if (paper[i][j] != start) {
+          return false;
+        }
       }
     }
     return true;
