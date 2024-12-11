@@ -1,77 +1,67 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
+  static class Egg {
+    private int durability;
+    private int weight;
 
-  private static Egg[] eggs;
-  private static int result;
+    public Egg(int durability, int weight) {
+      this.durability = durability;
+      this.weight = weight;
+    }
+  }
+
   private static int N;
-
-  public static void main(String[] args) throws Exception {
-
+  private static Egg[] eggs;
+  private static int answer = 0;
+  public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer st;
-
-    N  = Integer.parseInt(br.readLine());
+    N = Integer.parseInt(br.readLine());
     eggs = new Egg[N];
-    result = Integer.MIN_VALUE;
+    StringTokenizer st;
 
     for (int i = 0; i < N; i++) {
       st = new StringTokenizer(br.readLine());
-      eggs[i] = new Egg(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+      eggs[i] = new Egg(Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()));
     }
-
-    dfs(0, 0);
-    System.out.println(result);
+    hitEgg(0);
+    System.out.println(answer);
     br.close();
   }
 
-  private static void dfs(int depth, int count) {
-
-    if (depth == N || count == N  - 1) {
-      result = Math.max(result, count);
+  private static void hitEgg(int start) {
+    if (start == N) {
+      answer = Math.max(checkBrokenEggs(), answer);
       return;
     }
 
-    if (eggs[depth].durability <= 0) { // 지금의 계란이 꺠져있음
-      dfs(depth + 1, count); // 다음 계란으로 넘어가기
-      return;
-    }
-
+    Egg currentEgg = eggs[start];
     for (int i = 0; i < N; i++) {
-      if (i != depth && eggs[i].durability > 0) { // 자기 자신은 제외. 상대 계란이 0보다 큰 경우만 깨기
-        // 계란 깨기
-        eggs[depth].knockEgg(eggs[i]);
-        eggs[i].knockEgg(eggs[depth]);
-
-        int currentCount = count;
-
-        if (eggs[depth].durability <= 0) currentCount++;
-        if (eggs[i].durability <= 0) currentCount++;
-        dfs(depth + 1, currentCount); // 현재의 누적 값을 가지고 다음 계란으로 넘어간다.
-
-        eggs[depth].restoreEgg(eggs[i]);
-        eggs[i].restoreEgg(eggs[depth]);
+      if(i != start) {
+        Egg nextEgg = eggs[i];
+        if (currentEgg.durability > 0 && nextEgg.durability > 0) {
+          nextEgg.durability -= currentEgg.weight;
+          currentEgg.durability -= nextEgg.weight;
+          hitEgg(start + 1);
+          nextEgg.durability += currentEgg.weight; // 계란 복구
+          currentEgg.durability += nextEgg.weight;
+        } else {
+          hitEgg(start + 1);
+        }
       }
     }
   }
-}
 
-class Egg {
-    int durability;
-    int weight;
-
-  public Egg(int durability, int weight) {
-    this.durability = durability;
-    this.weight = weight;
-  }
-
-  public void knockEgg(Egg egg) {
-    this.durability -= egg.weight;
-  }
-
-  public void restoreEgg(Egg egg) {
-    this.durability += egg.weight;
+  private static int checkBrokenEggs() {
+    int count = 0;
+    for (Egg e : eggs) {
+      if (e.durability <= 0) {
+        count++;
+      }
+    }
+    return count;
   }
 }
