@@ -1,40 +1,37 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Main {
-
   public static void main(String[] args) throws Exception {
-
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    Set<String> set = new HashSet<String>();
-
     int N = Integer.parseInt(br.readLine());
 
+    Set<String> wordSet = new HashSet<>();
     for (int i = 0; i < N; i++) {
-      set.add(br.readLine());
+      wordSet.add(br.readLine());
     }
 
-    ArrayList<String> list = new ArrayList<>(set);
-
-    list.sort(new Comparator<String>() {
-      @Override
-      public int compare(String o1, String o2) {
-        if (o1.length() == o2.length()){
-          return o1.compareTo(o2); 
-        }
-        return Integer.compare(o1.length(), o2.length());
+    List<String> words = new ArrayList<>(wordSet);
+    words = words.stream().sorted((o1, o2) -> {
+      if (o1.length() == o2.length()) {
+        return o1.compareTo(o2);
       }
-    });
-
-    for (String word : list) {
-      bw.write(word+ "\n");
-    }
-
-    bw.flush();
-    bw.close();
+      return Integer.compare(o1.length(), o2.length());
+    }).collect(Collectors.toList());
+    printWords(words);
     br.close();
+  }
 
+  private static void printWords(List<String> words) {
+    StringBuilder sb = new StringBuilder();
+    for (String word : words) {
+      sb.append(word).append("\n");
+    }
+    System.out.println(sb);
   }
 }
-
