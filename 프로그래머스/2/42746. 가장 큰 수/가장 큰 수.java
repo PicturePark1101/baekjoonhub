@@ -1,30 +1,17 @@
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
-    
-    private int N;
-    private String answer;
-    
     public String solution(int[] numbers) {
-        N = numbers.length;        
-        String[] numberToStr = new String[N];
+        String[] numbersToString = Arrays.stream(numbers).mapToObj(String::valueOf).toArray(String[]::new);
         
-        int index = 0;
-        for (int number : numbers) {
-            numberToStr[index++] = String.valueOf(number);
-        }
-        
-        Arrays.sort(numberToStr, new Comparator<String>() {
-            @Override 
-            public int compare(String s1, String s2) {
-                int a = Integer.parseInt(s2 + s1);
-                int b = Integer.parseInt(s1 + s2);
-                return Integer.compare(a, b);            
-            }
+        Arrays.sort(numbersToString, (o1, o2) -> {
+            int n1 = Integer.parseInt(o1 + o2);
+            int n2 = Integer.parseInt(o2 + o1);
+            return Integer.compare(n2, n1);
         });
         
-        String answer = String.join("", numberToStr);
-        if (answer.charAt(0) == '0') return "0";
-        return answer;
+        String answerStr = String.join("", numbersToString);
+        if (answerStr.charAt(0) == '0') return "0";
+        return answerStr;
     }
 }
