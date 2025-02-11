@@ -1,34 +1,34 @@
+import java.util.*;
 import java.io.*;
 
 public class Main {
-
-
-  public static int[] cntWord (String str) {
-
-    int[] alphabet = new int[26];
-
-    for (int i = 0; i < str.length(); i++) {
-      alphabet[str.charAt(i) - 'a']++;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        char[] str1 = br.readLine().toCharArray();
+        char[] str2 = br.readLine().toCharArray();
+        
+        int[] sumChar1 = new int[26];
+        int[] sumChar2 = new int[26];
+        
+        countChars(str1, sumChar1);
+        countChars(str2, sumChar2);
+        
+        int answer = getAnswer(sumChar1, sumChar2);
+        System.out.println(answer);
+        br.close();
     }
-    return alphabet;
-  }
-
-  public static void main(String[] args) throws Exception {
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-    int cnt = 0;
-    int[] str1 = cntWord(br.readLine());
-    int[] str2 = cntWord(br.readLine());
-
-    for (int i = 0; i < 26; i++) {
-      cnt += Math.abs(str1[i] - str2[i]);
+    
+    private static void countChars(char[] strs, int[] countChar) {
+        for (char str : strs) {
+            countChar[str - 'a']++;
+        }        
     }
-
-    bw.write(Integer.toString(cnt));
-
-    br.close();
-    bw.close();
-  }
+    
+    private static int getAnswer(int[] sumChar1, int[] sumChar2) {
+        int count = 0;
+        for (int i = 0; i < 26; i++) {
+            count += Math.abs(sumChar1[i] - sumChar2[i]);
+        }
+        return count;
+    }
 }
