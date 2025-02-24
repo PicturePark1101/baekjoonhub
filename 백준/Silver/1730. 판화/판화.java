@@ -1,105 +1,100 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
+  static class Point {
+    private int r;
+    private int c;
 
-  public static boolean checkRC(int r, int c, int N){
-    if (r >=0 && r < N && c >= 0 && c < N){
-      return true;
+    public Point(int r, int c) {
+      this.r = r;
+      this.c = c;
     }
-    return false;
   }
-  public static void main(String[] args) throws Exception {
+  private static int N;
+  private static char[][] board;
+  private static Map<String, Point> direction = new HashMap<>(Map.of(
+      "R", new Point(0, 1),
+      "U", new Point(-1, 0),
+      "D", new Point(1, 0),
+      "L", new Point(0, -1)
+      ));
 
+  public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    N = Integer.parseInt(br.readLine());
+    board = new char[N][N];
+    makeBoard();
 
-    int N = Integer.parseInt(br.readLine());
-    char[][] arr = new char[N][N];
+    String[] commands = br.readLine().split("");
 
-    String command = br.readLine();
+    int currentR = 0;
+    int currentC = 0;
+    for (String cmd : commands) {
+      Point next = direction.get(cmd);
+      if (next == null) continue;  
+      int nextR = next.r + currentR;
+      int nextC = next.c + currentC;
 
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        arr[i][j] = '.';
+      if (!validPath(nextR, nextC)) continue;
+
+      if (isVertical(currentC, nextC)) {
+        // current, next 모두 갱신
+        changeBoardVertical(board[currentR][currentC], currentR, currentC);
+        changeBoardVertical(board[nextR][nextC], nextR, nextC);
+      } else {
+        changeBoardHorizontal(board[currentR][currentC], currentR, currentC);
+        changeBoardHorizontal(board[nextR][nextC], nextR, nextC);
       }
+      currentR = nextR;
+      currentC = nextC;
     }
 
-    int r = 0;
-    int c = 0;
-    for (int i = 0; i < command.length(); i++) {
-      int addR = 0;
-      int addC = 0;
-
-      switch (command.charAt(i)) {
-        case 'U':
-          addR = -1;
-          break;
-        case 'D':
-          addR = 1;
-          break;
-        case 'L':
-          addC = -1;
-          break;
-        case 'R':
-          addC = 1;
-          break;
-      }
-
-      if (checkRC(r + addR, c + addC, N)) {
-
-        // 자기꺼 검사
-        if (addR != 0) { // 수직 방향으로 움직임
-          if (arr[r][c] == '-') {
-            arr[r][c] = '+';
-          } else if (arr[r][c] == '.') {
-            arr[r][c] = '|';
-          }
-
-          if (arr[r + addR][c] == '-') {
-            arr[r + addR][c] = '+';
-          } else if (arr[r + addR][c] == '.'){
-            arr[r + addR][c] = '|';
-          }
-
-        } else if (addC != 0) { // 수평방향으로 움직임
-          if (arr[r][c] == '|') {
-            arr[r][c] = '+';
-          } else if (arr[r][c] == '.') { 
-            arr[r][c] = '-';
-          }
-
-          if (arr[r][c + addC] == '|') {
-            arr[r][c + addC] = '+';
-          } else if (arr[r][c + addC] == '.') {
-            arr[r][c + addC] = '-';
-          }
-        }
-        r += addR;
-        c += addC;
-
-      }
-
-
-
-
-    }
-
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        bw.write(String.valueOf(arr[i][j]));
-      }
-      bw.newLine();
-    }
-
-    bw.flush();
-    bw.close();
+    print();
     br.close();
-
   }
 
+  private static void changeBoardVertical(char b, int r, int c) {
+    if (b == 46) {
+      board[r][c] = 124;
+    }  else if (b == 45) {
+      board[r][c] = 43;
+    }
+  }
+
+  private static void changeBoardHorizontal(char b, int r, int c) {
+    if (b == 46) { // 수평
+      board[r][c] = 45;
+    } else if (b == 124) {
+      board[r][c] = 43;
+    }
+  }
+
+  private static boolean isVertical(int currentC, int nextC) {
+    return currentC - nextC == 0;
+  }
+  
+  private static boolean validPath(int r, int c) {
+    return r >= 0 && r < N && c >= 0 && c < N;
+  }
+
+  private static void makeBoard() {
+    for (int i = 0; i < N; i++) {
+      Arrays.fill(board[i], (char) 46);
+    }
+  }
+
+  private static void print() {
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        System.out.print(board[i][j]);
+      }
+      System.out.println();
+    }
+  }
 }
