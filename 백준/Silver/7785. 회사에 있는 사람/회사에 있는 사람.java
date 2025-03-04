@@ -1,49 +1,40 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-
-  public static void main(String[] args) throws Exception {
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    StringTokenizer st;
-
-    Set<String> set = new HashSet<>();
-
-    int N = Integer.parseInt(br.readLine());
-
-    for (int i = 0; i < N; i++){
-      st = new StringTokenizer(br.readLine());
-
-      String name = st.nextToken();
-      String status = st.nextToken();
-      if (status.equals("enter")) {
-        set.add(name);
-      } else {
-        set.remove(name);
-      }
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        StringTokenizer st;
+        
+        Set<String> employees = new HashSet<>();
+        
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            String name = st.nextToken();
+            String command = st.nextToken();
+            if (command.equals("enter")) {
+                employees.add(name);
+            } else {
+                employees.remove(name);
+            }
+            
+        }
+        
+        List<String> remainEmp = new ArrayList<>(employees);
+        remainEmp.sort((o1, o2) -> {
+            return o2.compareTo(o1);
+        });
+        
+        printEmp(remainEmp);
+        br.close();
     }
-
-    ArrayList<String> list = new ArrayList<>(set);
-    list.sort(Comparator.reverseOrder());
-
-    for (String name : list) {
-      bw.write(name+"\n");
+    
+    private static void printEmp(List<String> employees) {
+        StringBuilder sb = new StringBuilder();
+        for (String emp : employees) {
+            sb.append(emp).append("\n");
+        }
+        System.out.println(sb);
     }
-
-    bw.flush();
-    bw.close();
-    br.close();
-  }
-
-}
+} 
