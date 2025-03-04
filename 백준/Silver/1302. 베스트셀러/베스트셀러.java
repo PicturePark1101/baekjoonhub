@@ -1,42 +1,28 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    
-  public static void main(String[] args) throws Exception {
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    StringTokenizer st;
-    Map<String, Integer> map = new HashMap<>();
-
-    int N = Integer.parseInt(br.readLine());
-
-    for (int i = 0; i < N; i++) {
-
-      String name = br.readLine();
-      int cnt = map.getOrDefault(name, 0) + 1;
-      map.put(name, cnt);
-    }
-
-    List<Map.Entry<String, Integer>> entries = new ArrayList<>(map.entrySet());
-    entries.sort(new Comparator<Map.Entry<String, Integer>>() {
-      @Override
-      public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-
-        if (o1.getValue() == o2.getValue()) {
-            return o1.getKey().compareTo(o2.getKey());
+    public static void main (String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        
+        Map<String, Integer> sell = new HashMap<>();
+            
+        for (int i = 0; i < N; i++) {
+            String title = br.readLine();
+            
+            sell.put(title, sell.getOrDefault(title, 0) + 1);
         }
-
-        return o2.getValue().compareTo(o1.getValue());
-      }
-    });
-
-    bw.write(entries.get(0).getKey()+ "\n");
-
-    bw.flush();
-    bw.close();
-    br.close();
-
-  }
+        List<String> books = new ArrayList<>(sell.keySet());
+        
+        books.sort((o1, o2) -> {
+            if (sell.get(o1) == sell.get(o2)) {
+                return o1.compareTo(o2);
+            }
+           return sell.get(o2) - sell.get(o1);
+        });
+        
+        System.out.println(books.get(0));
+        br.close();
+    }
 }
