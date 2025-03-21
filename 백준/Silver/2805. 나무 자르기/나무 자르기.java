@@ -1,63 +1,54 @@
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-
-
-  private static int binarySearch(int[] treeH, int N, int M) {
-    int l = 0;
-    int r = treeH[N - 1];
-    int result = 0;
-
-    while (l <= r) {
-      int m = (l + r) / 2;
-      long sum = 0;
-
-      for (int i = 0; i < N; i++) {
-        if (treeH[i] > m) {
-          sum += treeH[i] - m;
+    
+    private static int[] tree;
+    private static int N;
+    private static int M;
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        
+        tree = new int[N];
+        
+         st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            tree[i] = Integer.parseInt(st.nextToken());
         }
-      }
-
-      if (sum >= M) {
-        result = m;
-        l = m + 1;
-      } else {
-        r = m - 1;
-      }
+        System.out.println(binarySearch());
+        br.close();
     }
-
-    return result;
-  }
-
-  public static void main(String[] args) throws Exception {
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    StringTokenizer st;
-
-
-    st = new StringTokenizer(br.readLine());
-    int N = Integer.parseInt(st.nextToken());
-    int M = Integer.parseInt(st.nextToken());
-
-    int[] treeH = new int[N];
-    st = new StringTokenizer(br.readLine());
-
-    for (int i = 0; i < N; i++) {
-      treeH[i] = Integer.parseInt(st.nextToken());
+    
+    private static int binarySearch() {       
+        int p = 0;
+        int q = Arrays.stream(tree).max().getAsInt();
+        int answer = 0;
+        
+        while (p <= q) {
+            int mid = (p + q) / 2;
+            
+            if (ifPossible(mid)) { // 가능하다면 
+                // 더 큰값을 찾아본다.
+                answer = mid;
+                p = mid + 1;
+            } else {
+                q = mid - 1;
+            }           
+        }
+        return answer;
     }
-
-    Arrays.sort(treeH);
-    bw.write(String.valueOf(binarySearch(treeH, N, M)));
-    bw.flush();
-    bw.close();
-    br.close();
-  }
-
+    
+    private static boolean ifPossible(int mid) {
+        long sum = 0;
+        for (int i = 0; i < N; i++) {
+            if (tree[i] >= mid) {
+                sum += tree[i] - mid;
+            }
+        }
+        return sum >= M;
+    }
 }
