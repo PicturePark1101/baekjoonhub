@@ -1,59 +1,52 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
+
 
 public class Main {
-
-  public static long cuttingCable(int[] cable, int N) {
-    long l = 1, r = cable[cable.length - 1];
-    long ans = 1;
-
-    while (l <= r) {
-      long m = (l + r) / 2;
-      int cnt = 0;
-
-      for (int i = 0; i < cable.length; i++) {
-        cnt += (cable[i] / m);
-      }
-
-//      if (cnt == N) {
-//        return ans;
-//      } else
-//      System.out.println(cnt +" "+m);
-      if (cnt < N){ // 개수보다 적음 -> 줄여야함
-        r = m - 1;
-      } else { // 개수보다 많다... -> m을 늘려야함 오른쪽 탐색
-        l = m + 1;
-        ans = m;
-      }
-
+    
+    private static int N;
+    private static int M;
+    private static int[] lines;
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        lines = new int[N];
+        
+        for (int i = 0; i < N; i++) {
+            lines[i] = Integer.parseInt(br.readLine());
+        }
+        System.out.println(binary());
+        br.close();
     }
-    return ans;
-  }
-  public static void main(String[] args) throws Exception {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    StringTokenizer st = new StringTokenizer(br.readLine());
-
-    int K = Integer.parseInt(st.nextToken());
-    int N = Integer.parseInt(st.nextToken());
-    int[] cable = new int[K];
-
-    for (int i = 0; i < K; i++){
-      cable[i] = Integer.parseInt(br.readLine());
+    
+    private static long binary() {
+        
+        long p = 1;
+        long q = Arrays.stream(lines).max().getAsInt();
+        long answer = 0;
+        
+        while (p <= q) {
+            long mid = (p + q) / 2;
+            if (isPossible(mid)) {
+                p = mid + 1;
+                answer = mid;
+            } else {
+                q = mid - 1;
+            }
+        }
+        return answer;
     }
-
-    Arrays.sort(cable);
-
-    bw.write(String.valueOf(cuttingCable(cable, N)));
-
-    br.close();
-    bw.flush();
-    bw.close();
-
-  }
-
+    
+    private static boolean isPossible(long n) {
+        int sum = 0;
+        for (int line : lines) {
+            if (line / n > 0) {
+                sum += line / n;
+            }
+        }
+        return sum >= M;
+    }
 }
