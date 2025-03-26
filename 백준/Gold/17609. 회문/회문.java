@@ -1,39 +1,47 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Main {
-
-  public static int isPalin (String str, int s, int e, int ans) {
-
-    if (ans >= 2) {
-      return 2;
-    }
-
-    while (s < e) {
-      if (str.charAt(s) == str.charAt(e)) {
-        s++;
-        e--;
-      } else {
-        int left = isPalin(str, s + 1, e, ans + 1);
-        int right = isPalin(str, s, e - 1, ans + 1);
-        return Math.min(left, right);
-      }
-    }
-
-    return ans;
-  }
-  public static void main(String[] args) throws Exception {
-
+  public static void main (String[] args) throws Exception {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
+    StringBuilder sb = new StringBuilder();
     int N = Integer.parseInt(br.readLine());
     for (int i = 0; i < N; i++) {
-      String str = br.readLine();
-      bw.write(String.valueOf(isPalin (str, 0, str.length() - 1, 0)));
-      bw.newLine();
+      String input = br.readLine();
+      sb.append(execute(input.toCharArray())).append("\n");
     }
-    bw.flush();
-    bw.close();
+    System.out.println(sb);
     br.close();
+  }
+
+  private static int execute(char[] chs) {
+    int p = 0;
+    int q = chs.length - 1;
+
+    while (p < q) {
+      if (chs[p] == chs[q]) {
+        p++;
+        q--;
+      } else {
+        int left = isPalin(p + 1, q, chs);
+        int right = isPalin(p, q - 1, chs);
+        return Math.min(left, right);
+      }
+
+    }
+    return 0;
+  }
+
+  private static int isPalin(int i, int j, char[] chs) {
+    while (i < j) {
+      if (chs[i] == chs[j]) {
+        i++;
+        j--;
+      } else {
+        return 2;
+      }
+
+    }
+    return 1;
   }
 }
