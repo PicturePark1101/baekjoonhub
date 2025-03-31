@@ -2,31 +2,34 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
+
   public static void main(String[] args) throws Exception {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     StringTokenizer st = new StringTokenizer(br.readLine());
     StringBuilder sb = new StringBuilder();
-
     int N = Integer.parseInt(st.nextToken());
     int K = Integer.parseInt(st.nextToken());
 
     Queue<Integer> people = new LinkedList<>();
     for (int i = 1; i <= N; i++) {
-      people.add(i);
+      people.offer(i);
     }
-    int count = 0;
 
+    int count = 0;
     sb.append("<");
-    while(people.size() != 1) {
+    while (!people.isEmpty()) {
       count++;
       if (count == K) {
-        sb.append(people.poll()).append(", ");
+        sb.append(people.poll());
+        if (people.size() != 0) {
+          sb.append(", ");
+        }
         count = 0;
       } else {
-        people.add(people.poll());
+        people.offer(people.poll());
       }
     }
-    sb.append(people.poll()).append(">");
+    sb.append(">");
     System.out.println(sb);
     br.close();
   }
