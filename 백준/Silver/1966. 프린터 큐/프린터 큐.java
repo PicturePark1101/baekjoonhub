@@ -1,63 +1,75 @@
-import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
 
-  public static void main(String[] args) throws Exception {
+  static class Docs {
+    private int priority;
+    private int order;
 
+    public Docs(int priority, int order) {
+      this.priority = priority;
+      this.order = order;
+    }
+  }
+
+  private static LinkedList<Docs> nums = new LinkedList<>();
+
+  public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringBuilder sb = new StringBuilder();
     StringTokenizer st;
-    int caseNum = Integer.parseInt(br.readLine());
 
-    Map<Integer, Integer> map;
+    int T = Integer.parseInt(br.readLine());
 
-    for (int i = 0; i < caseNum; i++) {
+    for (int i = 0; i < T; i++) {
       st = new StringTokenizer(br.readLine());
       int N = Integer.parseInt(st.nextToken());
       int M = Integer.parseInt(st.nextToken());
-      map = new HashMap<>();
 
       st = new StringTokenizer(br.readLine());
-
+      nums = new LinkedList<>();
       for (int j = 0; j < N; j++) {
-        int input = Integer.parseInt(st.nextToken());
-        map.put(j, input);
+        nums.offer(new Docs(Integer.parseInt(st.nextToken()), j));
       }
+      sb.append(execute(N, M)).append("\n");
+    }
 
-      Queue<Entry<Integer, Integer>> queue = new LinkedList<>(map.entrySet());
+    System.out.println(sb);
+    br.close();
+  }
 
-      int pollCnt = 0;
-      while (!queue.isEmpty()) {
-        pollCnt++;
-        Entry<Integer, Integer> m = queue.poll();
-        boolean isMaxExist = false;
-        Iterator<Entry<Integer, Integer>> iter = queue.iterator();
-        while (iter.hasNext()) {
+  private static int execute(int n, int m) {
+    int count = 0;
 
-          if (iter.next().getValue() > m.getValue()) {
-            isMaxExist = true;
-            queue.offer(m);
-            pollCnt--;
-            break;
+    while (!nums.isEmpty()) {
+      // 우선순위 나보다 높은거 있으면 꺼내서 뒤에 집어 넣음
+      // 아니면 꺼냄. -> 이 때 요소의 order이 찾는 m과 일치하면 출력
+
+      Docs currentDoc = nums.poll();
+      boolean isMax = true;
+
+      for (int i = 0; i < nums.size(); i++) {
+        if (currentDoc.priority < nums.get(i).priority) {
+          nums.offer(currentDoc);
+          for (int j = 0; j < i; j++) {
+            nums.offer(nums.poll());
           }
-        }
-
-        if (!isMaxExist && m.getKey() == M) {
-          bw.write(String.valueOf(pollCnt) + "\n");
+          isMax = false;
           break;
         }
       }
+      if (!isMax) {
+        continue;
+      }
 
+      count++;
+      if (currentDoc.order == m) return count;
     }
-    bw.flush();
-    bw.close();
-    br.close();
+    return 0;
   }
+
 }
