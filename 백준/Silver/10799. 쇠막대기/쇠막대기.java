@@ -17,7 +17,7 @@ public class Main {
       } else {
         if (str.charAt(i - 1) == '(') {
           count += stack.size() - 1;
-        } else if (!stack.isEmpty()){
+        } else {
           count++;
         }
         stack.pop();
