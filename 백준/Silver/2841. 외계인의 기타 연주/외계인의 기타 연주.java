@@ -1,43 +1,58 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-
-  public static void main(String[] args) throws Exception {
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer st = new StringTokenizer(br.readLine());
-
-    int N = Integer.parseInt(st.nextToken());
-    int P = Integer.parseInt(st.nextToken());
-
-    List<Stack<Integer>> stacks = new ArrayList<>();
-
-    for (int i = 0; i <= 6; i++) {
-      stacks.add(new Stack<Integer>());
+    
+    static class Guitar {
+        private int line;
+        private int flat;
+        
+        public Guitar(int line, int flat) {
+            this.line = line;
+            this.flat = flat;
+        }
     }
+    
+    private static Stack<Guitar>[] playlist;
 
-    int ans = 0;
-    for (int i = 0; i < N; i++) {
-      st = new StringTokenizer(br.readLine());
-      int n = Integer.parseInt(st.nextToken());
-      int p = Integer.parseInt(st.nextToken());
-
-      Stack<Integer> stack = stacks.get(n);
-      while ((!stack.empty()) && stack.peek() > p) {
-        stack.pop();
-        ans++;
-      }
-
-      if (stack.empty() || stack.peek() != p) {
-        stack.push(p);
-        ans++;
-      }
+    public static void main (String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        
+        playlist = new Stack[N];
+        
+        for (int i = 0; i < N; i++) {
+           playlist[i] = new Stack<>(); 
+        }
+        
+        int count = 0;
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            int lineNum = Integer.parseInt(st.nextToken());
+            int platNum = Integer.parseInt(st.nextToken());
+            
+            count += playGuitar(lineNum, platNum);
+        }
+        
+        System.out.println(count);
+        br.close();
     }
-    System.out.println(ans);
-  }
+    
+    private static int playGuitar(int lineNum, int platNum) {        
+        int count = 0;
+       
+        while (!playlist[lineNum].isEmpty() && playlist[lineNum].peek().flat > platNum) {                
+                playlist[lineNum].pop();
+                count++;
+        }
+        
+        if (playlist[lineNum].isEmpty() || playlist[lineNum].peek().flat < platNum) {
+            playlist[lineNum].push(new Guitar(lineNum, platNum));
+            count++;            
+        }    
+        return count; 
+    }
 }
