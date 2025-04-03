@@ -12,65 +12,42 @@ class Solution {
         }
     }
     
-    private LinkedList<Process> queue = new LinkedList<>();
-    
+    private Process[] processes;
     public int solution(int[] priorities, int location) {        
         int N = priorities.length;
-         
-        List<Integer> priority = new ArrayList<>();
-                
-        for (int i = 0; i < N; i++) {
-            priority.add(priorities[i]);
-            queue.offer(new Process(priorities[i], i));
-        }
         
-        priority.sort(Comparator.reverseOrder());
+        processes = new Process[N];
+        
 
-        int ans = 0;
-        while (!queue.isEmpty()) {
-            Process current = queue.peek();
-            if (priority.get(0) == current.n) {
-                Process pollP = queue.poll();
-                ans++;
-                                
-                if (location == pollP.index) {
-                    return ans;
-                }
-                priority.remove(0);
-            } else {
-                queue.offer(queue.poll());
-            }
-        }
         
-        return execute(location);
-    }
+        PriorityQueue<Process> queue = new PriorityQueue<>(
+            (a, b) -> {
+                if (b.n == a.n) {
+                    return Integer.compare(b.index, a.index);  
+                }
+                return Integer.compare(b.n, a.n);             
+            }
+        );
+        
+        for (int i = 0; i < N; i++) {
+            queue.offer(new Process(priorities[i], i));
+        }        
     
-    private int execute(int location) {        
-        int answer = 0;
-        
+        int order = 1;
         while (!queue.isEmpty()) {
-            Process current = queue.peek();
-            boolean isMax = true;
-            
-            for (int i = 1; i < queue.size(); i++) {
-                Process temp = queue.get(i);
-                
-                if (current.n < temp.n) { 
-                    isMax = false;
-                    for (int j = 0; j < i; j++) {
-                        queue.offer(queue.poll());
-                    }
-                }
-            }
-            
-            if (isMax) {
-               answer++;
-                if (queue.poll().index == location) {
-                    return answer;
-                }
-            }
-        
+            Process p = queue.poll();
+            if (p.index == location) return order;
+            order++;
         }
         return 0;
+    }
+    
+    private void execute() {
+        Queue<Process> queue = new ArrayDeque<>();
+        
+        // while(queue.isEmpty()) {
+            
+        // }
+        
     }
 }
