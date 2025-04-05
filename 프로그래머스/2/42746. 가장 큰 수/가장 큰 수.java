@@ -1,17 +1,17 @@
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
 
 class Solution {
-    public String solution(int[] numbers) {
-        String[] numbersToString = Arrays.stream(numbers).mapToObj(String::valueOf).toArray(String[]::new);
+    public String solution(int[] numbers) {        
+        List<String> arr = Arrays.stream(numbers)
+                        .boxed()
+                        .map(it -> String.valueOf(it))
+                        .collect(Collectors.toList());  
         
-        Arrays.sort(numbersToString, (o1, o2) -> {
-            int n1 = Integer.parseInt(o1 + o2);
-            int n2 = Integer.parseInt(o2 + o1);
-            return Integer.compare(n2, n1);
-        });
+        arr.sort((o1, o2) -> Integer.compare(Integer.parseInt(o2 + o1), Integer.parseInt(o1 + o2)));
         
-        String answerStr = String.join("", numbersToString);
-        if (answerStr.charAt(0) == '0') return "0";
-        return answerStr;
+        String str = String.join("", arr);
+        if (str.replaceAll("0", "").isEmpty()) return "0";
+        return str;
     }
 }
