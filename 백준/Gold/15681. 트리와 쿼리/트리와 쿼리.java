@@ -1,57 +1,63 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
 
-  static List<Integer>[] connectList;
-  static int[] subTreeSizes;
-  static boolean[] visited;
+	private static List<Integer>[] tree;
+	private static boolean[] visited;
+	private static int[] subtreeSize;
 
-  public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		int N = Integer.parseInt(st.nextToken());
+		int R = Integer.parseInt(st.nextToken());
+		int Q = Integer.parseInt(st.nextToken());
 
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer st = new StringTokenizer(br.readLine());
+		tree = new List[N + 1];
+		subtreeSize = new int[N + 1];
 
-    int N = Integer.parseInt(st.nextToken());
-    int R = Integer.parseInt(st.nextToken());
-    int Q = Integer.parseInt(st.nextToken());
+		for (int i = 0; i <= N; i++) {
+			tree[i] = new ArrayList<>();
+		}
 
-    connectList = new ArrayList[N + 1];
-    visited = new boolean[N + 1];
-    subTreeSizes = new int[N + 1];
+		for (int i = 0; i < N - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int n1 = Integer.parseInt(st.nextToken());
+			int n2 = Integer.parseInt(st.nextToken());
+			tree[n1].add(n2);
+			tree[n2].add(n1);
+		}
 
-    for (int i = 1; i <= N; i++) {
-      connectList[i] = new ArrayList<>();
-    }
+		visited = new boolean[N + 1];
+		dfs(R, 0, false);
+		for (int i = 0; i < Q; i++) {
+			int q = Integer.parseInt(br.readLine());
+			sb.append(subtreeSize[q]).append("\n");
+		}
+		System.out.println(sb);
 
-    for (int i = 0; i < N - 1; i++) {
-      st = new StringTokenizer(br.readLine());
-      int a = Integer.parseInt(st.nextToken());
-      int b = Integer.parseInt(st.nextToken());
-      connectList[a].add(b);
-      connectList[b].add(a);
-    }
+		br.close();
+	}
 
-    makeTree(R);
+	private static int dfs(int n, int subDepth, boolean isMeet) {
 
-    for (int i = 0; i < Q; i++) {
-      System.out.println(subTreeSizes[Integer.parseInt(br.readLine())]);
-    }
-    br.close();
-  }
+		visited[n] = true;
+		int size = 1;
 
-  public static int makeTree(int currentNode) {
-    visited[currentNode] = true;
-    int size = 1;
-    for (int n : connectList[currentNode]) {
-      if(!visited[n]) {
-        size += makeTree(n);
-      }
-    }
-    subTreeSizes[currentNode] = size;
-    return size;
-  }
+		for (int t : tree[n]) {
+			if (visited[t]) continue;
+			size += dfs(t,subDepth + 1, isMeet);
+		}
+
+		subtreeSize[n] = size;
+		return size;
+
+	}
 }
