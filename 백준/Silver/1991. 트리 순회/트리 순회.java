@@ -1,121 +1,83 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        
-        st = new StringTokenizer(br.readLine());
-        
-        TreeNode rootNode = new TreeNode(st.nextToken());
-        Tree tree = new Tree(rootNode);
-        rootNode.setLeftNode(st.nextToken());
-        rootNode.setRightNode(st.nextToken());
 
-        for (int i = 0; i < N - 1; i++) {
-            st = new StringTokenizer(br.readLine());
-            TreeNode findTreeNode = findNode(tree.getRoot(), st.nextToken());
-            findTreeNode.setLeftNode(st.nextToken());
-            findTreeNode.setRightNode(st.nextToken());
-        }
-        
-        preOrder(rootNode);
-        System.out.println();
-        inOrder(rootNode);
-        System.out.println();
-        postOrder(rootNode);
-    }
-    
-    // 노드 찾기 
-    private static TreeNode findNode(TreeNode node, String alphabet) {
-        if (node == null) {
-            return null;
-        }
-    
-        if (alphabet.equals(node.getAlphabet())) {
-            return node;
-        }
-        
-        TreeNode leftResult = findNode(node.getLeftNode(), alphabet);
-        if (leftResult != null) {
-           return leftResult; // 왼쪽에서 찾으면 반환
-        }
-        return findNode(node.getRightNode(), alphabet); // 오른쪽 결과 반환
-    }
-    
-    // 전위순회
-    private static void preOrder(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        System.out.print(node.getAlphabet());
-        preOrder(node.getLeftNode());
-        preOrder(node.getRightNode());
-    }
-    
-    private static void inOrder(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        inOrder(node.getLeftNode());
-        System.out.print(node.getAlphabet());
-        inOrder(node.getRightNode());
-    }
-    
-    private static void postOrder(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        postOrder(node.getLeftNode());
-        postOrder(node.getRightNode());
-        System.out.print(node.getAlphabet());
-    }    
-}
+	static class Node {
+		private char n;
+		private Node left;
+		private Node right;
 
-class Tree {
-    private TreeNode root;
-    
-    public Tree(TreeNode root) {
-         this.root = root;
-    }
-    
-    public TreeNode getRoot() {
-        return this.root;
-    }
-}
+		public Node(char n) {
+			this.n = n;
+		}
+	}
+	private static int N;
+	private static StringBuilder sb = new StringBuilder();
+	private static Node[] tree = new Node[26];
 
-class TreeNode {
-    private String alphabet;
-    private TreeNode leftNode;
-    private TreeNode rightNode;
-    
-    public TreeNode(String alphabet) {
-        this.alphabet = alphabet;       
-    }
-    
-    public void setLeftNode(String leftStr) {   
-       if (!leftStr.equals(".")) {
-           this.leftNode = new TreeNode(leftStr);
-       }        
-    }
-    
-    public void setRightNode(String rightStr) {
-       if (!rightStr.equals(".")) {
-           this.rightNode = new TreeNode(rightStr);
-       }   
-    }
-    
-    public TreeNode getLeftNode() {
-        return this.leftNode;
-    }
-    
-    public TreeNode getRightNode() {
-        return this.rightNode;
-    }   
-    
-    public String getAlphabet() {
-        return this.alphabet;
-    }      
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		N = Integer.parseInt(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			char m = st.nextToken().charAt(0);
+			char l = st.nextToken().charAt(0);
+			char r = st.nextToken().charAt(0);
+
+			if (tree[m - 'A'] == null) {
+				tree[m - 'A'] = new Node(m);
+			}
+
+			if (l != '.') {
+				tree[l - 'A'] = new Node(l);
+				tree[m - 'A'].left = tree[l - 'A'];
+			}
+
+			if (r != '.') {
+				tree[r - 'A'] = new Node(r);
+				tree[m - 'A'].right = tree[r - 'A'];
+			}
+		}
+		preorder(tree[0]);
+		sb.append("\n");
+		inorder(tree[0]);
+		sb.append("\n");
+		postorder(tree[0]);
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void preorder(Node node) {
+		if (node == null) {
+			return;
+		}
+		sb.append(node.n);
+		preorder(node.left);
+		preorder(node.right);
+	}
+
+	private static void inorder(Node node) {
+		if (node == null) {
+			return;
+		}
+		inorder(node.left);
+		sb.append(node.n);
+		inorder(node.right);
+	}
+
+	private static void postorder(Node node) {
+		if (node == null) {
+			return;
+		}
+		postorder(node.left);
+		postorder(node.right);
+		sb.append(node.n);
+	}
 }
