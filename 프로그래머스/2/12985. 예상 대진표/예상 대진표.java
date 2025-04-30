@@ -1,24 +1,20 @@
-class Solution{
-    public int solution(int n, int a, int b){
-        return fight(a, b);
+class Solution
+{
+    public int solution(int n, int a, int b){        
+        return match(a, b);
     }
     
-    private int fight(int A, int B) {
-        if (Math.abs(A - B) == 1) {
-            if (A % 2 == 1 && B - A == 1) {
-                return 1;
-            } else if (B % 2 == 1 && A - B == 1) {
-                return 1;
-            }
-        }
-        
-        return fight(next(A), next(B)) + 1;
+    private int match(int a, int b) {
+        if (a == b) return 0;
+        a = getNext(a);
+        b = getNext(b);
+        return match(a, b) + 1;
     }
     
-    private int next(int n) {
-        if (n % 2 == 0) {
-            return n / 2;
+    private int getNext(int n) {
+        if (n % 2 != 0) {
+            return n / 2 + 1;
         }
-        return n / 2 + 1;
+        return n / 2;
     }
 }
