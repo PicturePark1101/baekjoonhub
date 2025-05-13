@@ -1,82 +1,94 @@
 import java.util.*;
 
 class Solution {
-    static class TreeNode {
+    
+    static class Node {
         private int n;
         private int x;
         private int y;
-        private TreeNode leftTree;
-        private TreeNode rightTree;
         
-        public TreeNode(int x, int y, int n) {
+        private Node left;
+        private Node right;
+        
+        public Node(int n, int x, int y) {
+            this.n = n;
             this.x = x;
             this.y = y;
-            this.n = n;
         }
     }
     
-    private static TreeNode[] nodes;
-    private static ArrayList<Integer> preOrderList = new ArrayList<>();
-    private static ArrayList<Integer> postOrderList  = new ArrayList<>();
+    Node[] nodes;
+    int maxHeight;
+    List<Integer> pre = new ArrayList<>();
+    List<Integer> post = new ArrayList<>();
     
-    public static int[][] solution(int[][] nodeinfo) {
-        int[][] answer = new int[2][];
-        int N = nodeinfo.length;
-        nodes = new TreeNode[N];
-                
-        for (int i = 0; i < N; i++) {
-            nodes[i] = new TreeNode(nodeinfo[i][0], nodeinfo[i][1], i + 1);
-        }
+    public int[][] solution(int[][] nodeinfo) {
+        makeNode(nodeinfo);       
+        Node root = nodes[0];
         
-        Arrays.sort(nodes, (o1, o2) -> {
-            if (o1.y == o2.y) { 
-                return Integer.compare(o1.x, o2.x);
-            }
-            return Integer.compare(o2.y, o1.y);
-        });
+        for (int i = 1; i < nodes.length; i++) {
+           makeTree(root, nodes[i]);
+        } 
         
-        TreeNode root = nodes[0];
-        for (int i = 1; i < N; i++) {
-            makeTree(root, nodes[i]);            
-        }
+        int[][] answer = new int[2][nodes.length];
         preOrder(root);
         postOrder(root);
         
-        answer[0] = preOrderList.stream().mapToInt(Integer::intValue).toArray();
-        answer[1] = postOrderList.stream().mapToInt(Integer::intValue).toArray();
-
+        for (int i = 0; i < pre.size(); i++) {
+            answer[0][i] = pre.get(i);
+        }
+        
+        for (int i = 0; i < post.size(); i++) {
+            answer[1][i] = post.get(i);
+        }
+        
         return answer;
     }
     
-
-    private static void makeTree(TreeNode treeNode, TreeNode node) {
+    private void preOrder(Node node) {
+        if (node == null) return;
+        pre.add(node.n);
+        preOrder(node.left);
+        preOrder(node.right);
+    }
+  
+    private void postOrder(Node node) {  
+        if (node == null) return;
+        postOrder(node.left);
+        postOrder(node.right); 
+        post.add(node.n);
+    }
+    
+    void makeNode(int[][] nodeinfo) {
+        nodes = new Node[nodeinfo.length];
         
-        if (treeNode.x < node.x) {
-            if (treeNode.rightTree == null) {
-                treeNode.rightTree = node;
-                return;
-            }
-            makeTree(treeNode.rightTree, node);
-        } else {
-            if (treeNode.leftTree == null) {
-                treeNode.leftTree = node;
-                return;
-            }
-            makeTree(treeNode.leftTree, node);
+        for (int i = 0; i < nodeinfo.length; i++) {
+            nodes[i] = new Node(i + 1, nodeinfo[i][0], nodeinfo[i][1]);
         }
+        
+         Arrays.sort(nodes, (a, b) -> {
+            if (b.y == a.y) {
+                return b.x - a.x;
+            }
+            return b.y - a.y;
+            
+        });
+    
     }
     
-    private static void preOrder(TreeNode node) {
-        if (node == null) return;
-        preOrderList.add(node.n);
-        preOrder(node.leftTree);
-        preOrder(node.rightTree);
-    }
-    
-    private static void postOrder(TreeNode node) {
-        if (node == null) return;
-        postOrder(node.leftTree);
-        postOrder(node.rightTree);
-        postOrderList.add(node.n);
+    private void makeTree(Node tree, Node n) {
+        if (tree.x < n.x) {
+            if (tree.right == null) {
+                tree.right = n;
+                return;
+            }
+            makeTree(tree.right, n);
+        } else {
+            if (tree.left == null) {
+                tree.left = n;
+                return;
+            }
+            makeTree(tree.left, n);
+        }
     }
 }
