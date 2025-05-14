@@ -1,66 +1,58 @@
 import java.util.*;
 
-
-
 class Solution {
     
-    static class Map {
+    private boolean[][] visited;
+    private int N;
+    private int M;
+    private int[][] distance;
+    private int[] dx = {-1, 0, 0, 1};
+    private int[] dy = {0, 1, -1, 0};
+    
+    static class Point {
         private int r;
         private int c;
-    
-        public Map(int r, int c) {
+        
+        public Point(int r, int c) {
             this.r = r;
             this.c = c;
         }
     }
-    
-    private static boolean[][] visited;
-    private static int[] dx = { -1, 0, 0, 1 };
-    private static int[] dy = { 0, 1, -1, 0 };
-    private static int n;
-    private static int m;
-    
     public int solution(int[][] maps) {
-        n = maps.length;
-        m = maps[0].length;    
-        visited = new boolean[n][m];
-        return bfs(maps);
-    }
-    
-    private int bfs(int[][] maps) {
-        Queue<Map> queue = new ArrayDeque<>();
-        int length = 0;
-        queue.add(new Map(0, 0));
-        visited[0][0] = true;
+        N = maps.length;
+        M = maps[0].length;
+        distance = new int[N][M];
+        visited = new boolean[N][M];
+        int answer = 0;
         
-        while(!queue.isEmpty()) {
-          length++;
-            int size = queue.size();
-           for (int j = 0; j < size; j++) {
-                Map map = queue.poll();
-                int mR = map.r;
-                int mC = map.c;
-               
-                if (mR == n - 1 && mC == m - 1) {
-                    return length;
-                }
-
-                visited[mR][mC] = true;
-                for (int i = 0; i < 4; i++) {
-                    int newR = dx[i] + mR;
-                    int newC = dy[i] + mC;
-                    if (validPath(newR, newC) && maps[newR][newC] == 1 && !visited[newR][newC]) {
-                        queue.add(new Map(newR, newC));
-                        visited[newR][newC] = true;                    
-                    }          
+        Queue<Point> queue = new LinkedList<>();
+        queue.offer(new Point(0, 0));
+        distance[0][0] = 1;
+        
+        while (!queue.isEmpty()) {
+            Point now = queue.poll();
+            int nowR = now.r;
+            int nowC = now.c;
+        
+            for (int i = 0; i < 4; i++) {
+                int nextR = nowR + dx[i];
+                int nextC = nowC + dy[i];
+                
+                
+                if (!vaildPath(nextR, nextC) || visited[nextR][nextC]) continue;
+            
+        
+                if (maps[nextR][nextC] == 1) {        
+                    queue.offer(new Point(nextR, nextC));
+                    distance[nextR][nextC] = distance[nowR][nowC] + 1;
+                    visited[nextR][nextC] = true;
                 }
             }
         }
-        
-        return -1;
+        return distance[N - 1][M - 1] == 0 ? -1 : distance[N - 1][M - 1];
     }
     
-    private boolean validPath(int r, int c){
-        return r >= 0 && r < n && c >= 0 && c < m;
+    private boolean vaildPath(int r, int c) {
+        return r >= 0 && r < N && c >= 0 && c < M;
     }
 }
