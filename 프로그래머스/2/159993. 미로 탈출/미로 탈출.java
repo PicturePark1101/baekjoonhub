@@ -2,80 +2,86 @@ import java.util.*;
 
 class Solution {
     
-    static class Map {
+    static class Point{
         private int r;
         private int c;
         
-        public Map(int r, int c) {
+        public Point(int r, int c) {
             this.r = r;
             this.c = c;
-        }        
+        }
     }
     
-    private static final int[] dx = {-1, 0, 0, 1};
-    private static final int[] dy = {0, 1, -1, 0};    
-    private static int R;
-    private static int C;
-
+    private char[][] mapsChar;
+    private int N;
+    private int M;
+    private int[] dx = {-1, 0, 0, 1};
+    private int[] dy = {0, 1, -1, 0};
+    
     public int solution(String[] maps) {
-        int answer = 0;
-        R = maps.length;
-        C = maps[0].split("").length;
+        N = maps.length;
+        M = maps[0].length();
+        mapsChar = new char[N][M];
         
-        Map startInfo = null;
-        Map endInfo = null;
-        Map leverInfo = null;
-        for (int i = 0; i < maps.length; i++) {
-            String[] str = maps[i].split("");
-            for (int j = 0; j < C; j++) {
-                if (str[j].equals("S")) {
-                    startInfo = new Map(i, j);
+        Point startPoint = null;
+        Point leverPoint = null;
+        Point exitPoint = null;
+        
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                mapsChar[i][j] = maps[i].charAt(j);
+                if (mapsChar[i][j] == 'S') {
+                    startPoint = new Point(i, j);
                 }
-                if (str[j].equals("E")) {
-                    endInfo = new Map(i, j);
+                if (mapsChar[i][j] == 'E') {
+                    exitPoint = new Point(i, j);
                 }
-                if (str[j].equals("L")) {
-                    leverInfo = new Map(i, j);
-                }                
+                if (mapsChar[i][j] == 'L') {
+                    leverPoint = new Point(i, j);
+                }
             }
         }
         
-        int first = bfs(maps, startInfo, leverInfo);
-        int second = bfs(maps, leverInfo, endInfo);
-        if (first == -1 || second == -1) return -1;
-
-        return first + second;
+        int getLeverPath = bfs(startPoint, leverPoint);
+        if (getLeverPath == -1) return -1;
+        int getExitPath = bfs(leverPoint, exitPoint);
+        if (getExitPath == -1) return -1;
+        return getLeverPath + getExitPath;
     }
     
-    private int bfs(String[] maps,  Map start, Map end) {
-        int[][] dist = new int[R][C];
+    private int bfs(Point start, Point end) {
         
-        Queue<Map> queue = new ArrayDeque<>();
-        queue.add(start);
-        dist[start.r][start.c] = 1;
-                
+        Queue<Point> queue = new ArrayDeque<>();
+        boolean[][] visited = new boolean[N][M];
+        int[][] path = new int[N][M];
+        
+        queue.offer(start);
+        visited[start.r][start.c] = true;
+        
         while(!queue.isEmpty()) {
-            Map m = queue.poll();
-            int mR = m.r;
-            int mC = m.c;
-
+            Point now = queue.poll();
+            int nowR = now.r;
+            int nowC = now.c;
+            
+            if (nowR == end.r && nowC == end.c) return path[nowR][nowC];
+            
             for (int i = 0; i < 4; i++) {
-                int newR = mR + dx[i];
-                int newC = mC + dy[i];
+                int newR = nowR + dx[i];
+                int newC = nowC + dy[i];         
+                
                 if (!validPath(newR, newC)) continue;
-                if (dist[newR][newC] != 0) continue;
-              
-                if (maps[newR].charAt(newC) != 'X'){
-                    queue.offer(new Map(newR, newC));
-                    dist[newR][newC] = dist[mR][mC] + 1;
-                }
-            }
+                
+                if (mapsChar[newR][newC] == 'X' || visited[newR][newC]) continue;
+                queue.offer(new Point(newR, newC));
+                visited[newR][newC] = true; 
+                path[newR][newC] =  path[nowR][nowC] + 1;
+            }            
         }
-   
-        return dist[end.r][end.c] - 1;
-    }
         
-    private boolean validPath(int r, int c) {
-        return r >= 0 && r < R && c >= 0 && c < C;
+        return -1;
     }
+    private boolean validPath(int r, int c) {
+        return r >= 0 && r < N && c >= 0 && c < M;
+    }
+    
 }
