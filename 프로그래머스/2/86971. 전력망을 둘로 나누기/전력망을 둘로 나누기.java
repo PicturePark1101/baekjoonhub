@@ -2,41 +2,42 @@ import java.util.*;
 
 class Solution {
     
-    private List<Integer>[] adList;
+    private List<Integer>[] adjust;
     private boolean[] visited;
     
     public int solution(int n, int[][] wires) {
-        adList = new ArrayList[n + 1];
-               
-        for (int i = 0; i <= n; i++) {
-            adList[i] = new ArrayList<>();
+        int answer = Integer.MAX_VALUE;
+        adjust = new ArrayList[n + 1];
+        
+        for (int i = 0; i < n + 1; i++) {
+            adjust[i] = new ArrayList<>();
         }
         
-        int answer = n + 1;
-        for (int i = 0; i < n - 1; i++) {
-            int a = wires[i][0];
-            int b = wires[i][1];
-            adList[a].add(b); 
-            adList[b].add(a); 
+        for (int[] edge : wires) {
+            adjust[edge[0]].add(edge[1]);
+            adjust[edge[1]].add(edge[0]);
         }
-                       
-        for (int i = 0; i < n - 1; i++) {
-            visited = new boolean[n + 1];
-            int a = dfs(wires[i][0], wires[i][1], 1);
-            int b = n - a;
-            int gap = Math.abs(a - b);
-            answer = Math.min(gap, answer);
-        }        
+        
+        for (int[] edge : wires) {
+            int count1 = getLinkedNodeCount(new boolean[n + 1], edge[0], edge[1]);
+            int count2 = getLinkedNodeCount(new boolean[n + 1], edge[1], edge[0]);
+            answer = Math.min(Math.abs(count1 - count2), answer);
+        }
+        
         return answer;
     }
     
-    private int dfs(int now, int exceptionNode, int depth) {
-        visited[now] = true;        
-        for (int next : adList[now]) {
-            if (!visited[next] && next != exceptionNode) {
-                depth = dfs(next, exceptionNode, depth + 1);
+    private int getLinkedNodeCount(boolean[] visited, int n, int expcetion) {
+
+        visited[n] = true;   
+        int count = 1;
+        
+        for (int ad : adjust[n]) {
+            if (visited[ad] || expcetion == ad) {
+                continue;
             }
+            count += getLinkedNodeCount(visited, ad, expcetion);
         }
-        return depth;
+        return count;
     }
 }
