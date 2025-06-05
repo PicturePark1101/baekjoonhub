@@ -2,19 +2,12 @@ import java.util.*;
 
 class Solution {
     public long solution(long n) {
-        List<Long> arrList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        String[] N = Long.toString(n).split("");
         
-        while (n > 0) {
-            arrList.add(n % 10);
-            n /= 10;
-        }
+        Arrays.sort(N, (n1, n2) -> {
+            return n2.compareTo(n1);
+        });
         
-        arrList.sort(Comparator.reverseOrder());
-        for (Long num : arrList) {
-            sb.append(num);
-        }
-        
-        return Long.parseLong(sb.toString());
+        return Long.parseLong(String.join("", N));
     }
 }
